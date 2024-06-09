@@ -1,0 +1,49 @@
+<mat-card>
+  <h1>Vowels</h1>
+  <mat-card-content
+    ><div class="container-fluid bg-primary-subtle m-1">
+      <div class="row">
+        <div class="row">
+          <h3 class="bg-primary-subtle">
+            Return the number (count) of vowels in the given string. We will
+            consider a, e, i, o, u as vowels (but not y).
+          </h3>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <form (ngSubmit)="getCount(vowelsValue)">
+            <label for="vowelsValue"></label>
+            <input
+              type="text"
+              id="vowelsValue"
+              class="form-control"
+              #vowelsValue
+              placeholder="enter the string"
+            />
+            <button type="submit" mat-flat-button color="primary">Info</button>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              (click)="clear()"
+            >
+              Clear
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <h2>Result:</h2>
+          <div>
+            <p>
+              {{ someString }}
+            </p>
+            <p>
+              {{ result }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div></mat-card-content
+  >
+</mat-card>

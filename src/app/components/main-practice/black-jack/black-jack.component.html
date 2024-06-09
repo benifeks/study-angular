@@ -1,0 +1,37 @@
+<div class="homeCol container-fluid">
+  <div class="row row-cols-1">
+    <h1>BLACK-JACK</h1>
+    <h2>Create a Black Jack game</h2>
+  </div>
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-md-10 text-start">
+        <div class="row">
+          <app-cards-player [showCardsPlayer]="showCardsPlayer"></app-cards-player>
+        </div>
+
+        <div class="container-fluid p-3">
+          <div class="row row-cols-3">
+            <div class="col-md-2 text-start">
+              <app-deck></app-deck>
+            </div>
+            <div class="col-md-2 text-start">
+              <app-info-bj
+                [showResultPlayer]="showResultPlayer"
+                [showResultBankir]="showResultBankir"
+                [resultMessage]="resultMessage"
+              ></app-info-bj>
+            </div>
+            <div class="col-md-2 text-start">
+              <app-control-bj (updateResult)="updateResult($event)"></app-control-bj>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <app-cards-bankir [showCardsBankir]="showCardsBankir"></app-cards-bankir>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

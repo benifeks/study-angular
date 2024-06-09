@@ -1,0 +1,51 @@
+<mat-card>
+  <h1>Find word</h1>
+  <mat-card-content
+    ><div class="container-fluid bg-primary-subtle m-1">
+      <div class="row">
+        <div class="row">
+          <h3 class="bg-primary-subtle">
+            How many times each word appears in the text.
+          </h3>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <form (ngSubmit)="findWord(textWord)">
+            <label for="textWord"></label>
+            <input
+              type="text"
+              id="textWord"
+              class="form-control"
+              #textWord
+              placeholder="enter the text"
+            />
+            <button
+             type="submit"
+             mat-flat-button 
+             color="primary">Info</button>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              (click)="clear()"
+            >
+              Clear
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <h2>Result:</h2>
+          <div>
+            <div *ngFor="let item of wordsArray">
+              <p>
+                <span> {{ item.word }} </span> -
+                <span> {{ item.value }} </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

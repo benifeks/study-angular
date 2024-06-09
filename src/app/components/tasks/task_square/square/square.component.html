@@ -1,0 +1,47 @@
+<mat-card>
+  <h1>Square</h1>
+
+  <mat-card-content
+    ><div class="container-fluid bg-primary-subtle m-1">
+      <div class="row">
+        <div class="row">
+          <h3 class="bg-primary-subtle">
+            Is a number the square of another integer
+          </h3>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <form (ngSubmit)="isSquare(squaresValue)">
+            <label for="squaresValue"></label>
+            <input
+              type="number"
+              id="squaresValue"
+              class="form-control"
+              #squaresValue
+              placeholder="enter the number"
+            />
+            <button type="submit" mat-flat-button color="primary">Info</button>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              (click)="clearSquare()"
+            >
+              Clear
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <h2>Result:</h2>
+          <div *ngFor="let item of squares">
+            <p>
+              <span>{{ item.resultBoolean }}</span> -
+              <span>{{ item.resultNumber }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div></mat-card-content
+  >
+</mat-card>

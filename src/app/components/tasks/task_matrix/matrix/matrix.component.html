@@ -1,0 +1,50 @@
+<mat-card>
+  <h1>Matrix</h1>
+
+  <mat-card-content
+    ><div class="container-fluid bg-primary-subtle m-1">
+      <div class="row">
+        <div class="row">
+          <h3 class="bg-primary-subtle">Filling the matrix with a spiral</h3>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <form (ngSubmit)="showMatrix(matrix)">
+            <label for="matrix"></label>
+            <input
+              type="number"
+              id="matrix"
+              class="form-control"
+              #matrix
+              placeholder="enter the number"
+            />
+            <button type="submit" mat-flat-button color="primary">
+              Filling the matrix
+            </button>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              (click)="clear()"
+            >
+              Clear
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-6 bg-primary-subtle text-start">
+          <h2>Result:</h2>
+          <div>
+            <div *ngFor="let row of matrixShow">
+              <div>
+                <span class="elementMatrix m-2" *ngFor="let elem of row">
+                  {{ elem }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></mat-card-content
+  >
+</mat-card>

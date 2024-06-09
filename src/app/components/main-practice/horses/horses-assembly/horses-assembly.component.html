@@ -1,0 +1,49 @@
+<div class="container-fluid overflow-hidden">
+  <!--  -->
+  <div class="row">
+    <div class="col col-md-3">
+      <div class="p-1">
+        <app-info
+          class="info"
+          [horses]="horses"
+          [totalMileage]="totalMileage"
+          [counter]="counter"
+        ></app-info>
+      </div>
+    </div>
+    <div class="col col-md-9">
+      <div class="p-1">
+        <app-place class="place" [horses]="horses"></app-place>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="row">
+    <div class="col col-md-6">
+      <div class="p-2">
+        <div class="p-1">
+          <mat-form-field appearance="fill">
+            <mat-label>Add a new Horse</mat-label>
+            <input matInput placeholder="Orange" [(ngModel)]="color" />
+          </mat-form-field>
+          <span class="m-3">
+            <button mat-flat-button color="primary" (click)="add()">
+              Add a new Horse
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="p-4">
+        <app-dice
+          class="dice"
+          [horses]="horses"
+          (dicesDrop)="updateResults()"
+          (reset)="reset()"
+        ></app-dice>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+</div>
