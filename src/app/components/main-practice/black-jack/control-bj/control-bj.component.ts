@@ -18,14 +18,14 @@ import {
 export class ControlBjComponent extends BaseComponent {
   @Output() updateResult: EventEmitter<Result> = new EventEmitter<Result>();
 
-  public resultPlayer: number = 0;
-  public resultBankir: number = 0;
-  public takeCardLink: string = '';
+  public shuffleDisabled: boolean = false;
   public takeCardDisabled: boolean = true;
   public passDisabled: boolean = true;
   public newDeck = newDeck;
   public hiddenCard: string = hiddenCard;
-  ///
+  public resultPlayer: number = 0;
+  public resultBankir: number = 0;
+  public takeCardLink: string = '';
 
   private _showResult: Result = {
     resultPlayer: '',
@@ -41,51 +41,53 @@ export class ControlBjComponent extends BaseComponent {
     cardsBankirHidden: [],
   };
 
-  public constructor(private bjService: BjService) {
+  public constructor(private _bjService: BjService) {
     super();
   }
 
-  public shuffleDeck(link: string) {
+  public shuffleDeck(link: string): void {
     this._setStartValues();
-    this.bjService
+    this._bjService
       .getCards(link)
       .pipe(takeUntil(this._destroy$$))
       .subscribe((deck) => {
         this.takeCardLink = `https://deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=2`;
         this.updateResult.emit(this._showResult);
-        this.takeCardDisabled = !this.takeCardDisabled;
+        this.shuffleDisabled = true;
+        this.takeCardDisabled = false;
       });
   }
 
-  public makeMove(link: string) {
-    this.bjService
+  public makeMove(link: string): void {
+    this.passDisabled = this.takeCardDisabled = true;
+    this._bjService
       .getCards(link)
       .pipe(takeUntil(this._destroy$$))
       .subscribe((cards: Cards) => {
-        this.takeCards(cards);
+        this.passDisabled = this.takeCardDisabled = false;
+        this._takeCards(cards);
         this.updateResult.emit(this._showResult);
-        this.passDisabled = false;
       });
   }
 
-  public passPlayer(link: string) {
-    this.bjService
+  public passPlayer(link: string): void {
+    this._bjService
       .getCards(link)
       .pipe(takeUntil(this._destroy$$))
       .subscribe((cards: Cards) => {
-        this.pass(cards, link);
-        this.showCards();
+        this._pass(cards, link);
+        this._showCards();
         this.updateResult.emit(this._showResult);
       });
   }
-  //==============================================
 
-  private _startDisabled() {
+  private _startDisabled(): void {
+    this.shuffleDisabled = false;
     this.takeCardDisabled = true;
     this.passDisabled = true;
   }
 
-  private _setStartValues() {
+  private _setStartValues(): void {
     this.workCards.cardsPlayer = [];
     this.workCards.cardsBankir = [];
     this.resultPlayer = 0;
@@ -97,26 +99,26 @@ export class ControlBjComponent extends BaseComponent {
     this._showResult.resultCardsBankir = [];
   }
 
-  private _convertValue(value: string) {
-    let valueNumber;
+  private _convertValue(value: string): number | string {
+    let currentValue: number | string;
     if (value === 'ACE') {
-      valueNumber = 11;
-      return valueNumber;
+      currentValue = 11;
+      return currentValue;
     }
     if (value === 'KING') {
-      valueNumber = 4;
-      return valueNumber;
+      currentValue = 4;
+      return currentValue;
     }
     if (value === 'QUEEN') {
-      valueNumber = 3;
-      return valueNumber;
+      currentValue = 3;
+      return currentValue;
     }
     if (value === 'JACK') {
-      valueNumber = 2;
-      return valueNumber;
+      currentValue = 2;
+      return currentValue;
     }
-    valueNumber = value;
-    return valueNumber;
+    currentValue = value;
+    return currentValue;
   }
 
   private _countScores(cards: CardValues[]): number {
@@ -127,7 +129,7 @@ export class ControlBjComponent extends BaseComponent {
     );
   }
 
-  public takeCardPlayer(data: Cards) {
+  private _takeCardPlayer(data: Cards): void {
     this._showResult.resultCardsPlayer.push({
       image: data.cards[0].image,
       value: +this._convertValue(data.cards[0].value),
@@ -136,7 +138,7 @@ export class ControlBjComponent extends BaseComponent {
     this._showResult.resultPlayer = this.resultPlayer;
   }
 
-  public takeCardBankir(data: Cards) {
+  private _takeCardBankir(data: Cards): void {
     if (this.resultBankir < 16) {
       this.workCards.cardsBankir.push({
         image: data.cards[1].image,
@@ -150,36 +152,36 @@ export class ControlBjComponent extends BaseComponent {
     }
     if (this.resultBankir > 21) {
       this._showResult.resultMessage = 'ВЫ ВЫИГРАЛИ!!! Bankir - ПЕРЕБОР!!!';
-      this.showCards();
+      this._showCards();
       this._startDisabled();
       return;
     }
   }
 
-  public takeCards(cards: Cards) {
-    this.takeCardPlayer(cards);
+  private _takeCards(cards: Cards): void {
+    this._takeCardPlayer(cards);
     if (this.resultPlayer > 21) {
       this._showResult.resultMessage = 'ПЕРЕБОР!!! ВЫ ПРОИГРАЛИ...';
-      this.showCards();
+      this._showCards();
       this._startDisabled();
       return;
     }
     if (this.resultPlayer === 21) {
       this._showResult.resultMessage = 'Player - 21!!! ВЫ ВЫИГРАЛИ!!!';
-      this.showCards();
+      this._showCards();
       this._startDisabled();
       return;
     }
-    this.takeCardBankir(cards);
+    this._takeCardBankir(cards);
     if (this.resultBankir === 21) {
       this._showResult.resultMessage = 'Bankir - "21"!!! ВЫ ПРОИГРАЛИ...';
-      this.showCards();
+      this._showCards();
       this._startDisabled();
       return;
     }
   }
 
-  public showCards() {
+  private _showCards(): void {
     this._showResult.resultBankir = this.resultBankir;
     this._showResult.resultCardsBankir = this.workCards.cardsBankir.map(
       (card: CardValues) => {
@@ -188,39 +190,29 @@ export class ControlBjComponent extends BaseComponent {
     );
   }
 
-  public pass(cards: Cards, link: string) {
-    this.launchTakeCardBankir(cards, link);
+  private _pass(cards: Cards, link: string): void {
+    this._startDisabled();
+    this._launchTakeCardBankir(cards, link);
     if (this.resultBankir > 21) {
       this._showResult.resultMessage = 'ВЫ ВЫИГРАЛИ!!! Bankir - ПЕРЕБОР!!!';
-      this._startDisabled();
       return;
     }
     if (this.resultBankir === this.resultPlayer) {
       this._showResult.resultMessage = 'НИЧЬЯ!!!';
-      this._startDisabled();
       return;
     }
     if (this.resultBankir > this.resultPlayer) {
       this._showResult.resultMessage = 'ВЫ ПРОИГРАЛИ...';
-      this._startDisabled();
       return;
     }
     if (this.resultBankir < this.resultPlayer) {
       this._showResult.resultMessage = 'ВЫ ВЫИГРАЛИ!!!';
-      this._startDisabled();
       return;
     }
   }
 
-  public compare() {
-    if (this.resultPlayer > 21) {
-      this._showResult.resultMessage = 'ПЕРЕБОР!!! ВЫ ПРОИГРАЛИ...';
-      this._startDisabled();
-    }
-  }
-
-  public launchTakeCardBankir(cards: Cards, link: string) {
-    this.takeCardBankir(cards);
+  private _launchTakeCardBankir(cards: Cards, link: string): void {
+    this._takeCardBankir(cards);
     if (this.resultBankir < 16) {
       this.passPlayer(link);
     }
